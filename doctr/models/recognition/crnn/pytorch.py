@@ -3,6 +3,9 @@
 # This program is licensed under the Apache License version 2.
 # See LICENSE or go to <https://www.apache.org/licenses/LICENSE-2.0.txt> for full license details.
 
+import os
+import os.path as osp
+
 from copy import deepcopy
 from itertools import groupby
 from typing import Any, Callable, Dict, List, Optional, Tuple
@@ -26,7 +29,9 @@ default_cfgs: Dict[str, Dict[str, Any]] = {
         'std': (0.299, 0.296, 0.301),
         'input_shape': (3, 32, 128),
         'vocab': VOCABS['legacy_french'],
-        'url': 'https://github.com/mindee/doctr/releases/download/v0.3.1/crnn_vgg16_bn-9762b0b0.pt',
+        # 'url': 'https://github.com/mindee/doctr/releases/download/v0.3.1/crnn_vgg16_bn-9762b0b0.pt',
+        'url': None,
+        'path2weights': osp.join(os.getcwd(), "ocr_core/weights/rec/crnn_vgg16_bn-9762b0b0.pt"),
     },
     'crnn_mobilenet_v3_small': {
         'mean': (0.694, 0.695, 0.693),

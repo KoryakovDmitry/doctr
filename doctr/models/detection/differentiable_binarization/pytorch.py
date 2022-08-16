@@ -3,6 +3,9 @@
 # This program is licensed under the Apache License version 2.
 # See LICENSE or go to <https://www.apache.org/licenses/LICENSE-2.0.txt> for full license details.
 
+import os
+import os.path as osp
+
 from typing import Any, Callable, Dict, List, Optional
 
 import numpy as np
@@ -25,7 +28,9 @@ default_cfgs: Dict[str, Dict[str, Any]] = {
         'input_shape': (3, 1024, 1024),
         'mean': (0.798, 0.785, 0.772),
         'std': (0.264, 0.2749, 0.287),
-        'url': 'https://github.com/mindee/doctr/releases/download/v0.3.1/db_resnet50-ac60cadc.pt',
+        # 'url': 'https://github.com/mindee/doctr/releases/download/v0.3.1/db_resnet50-ac60cadc.pt',
+        'url': None,
+        'path2weights': osp.join(os.getcwd(), "ocr_core/weights/det/db_resnet50-ac60cadc.pt"),
     },
     'db_resnet34': {
         'input_shape': (3, 1024, 1024),

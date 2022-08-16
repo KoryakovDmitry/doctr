@@ -3,6 +3,9 @@
 # This program is licensed under the Apache License version 2.
 # See LICENSE or go to <https://www.apache.org/licenses/LICENSE-2.0.txt> for full license details.
 
+import os
+import os.path as osp
+
 import logging
 from typing import Any, List, Optional
 
@@ -35,24 +38,49 @@ def load_pretrained_params(
         ignore_keys: list of weights to be ignored from the state_dict
     """
 
-    if url is None:
-        logging.warning("Invalid model URL, using default initialization.")
-    else:
-        archive_path = download_from_url(url, hash_prefix=hash_prefix, cache_subdir='models', **kwargs)
+    flag_else = False
+    if "path2weights" in kwargs:
+        if osp.isfile(kwargs["path2weights"]):
+            # Read state_dict
+            state_dict = torch.load(kwargs["path2weights"], map_location='cpu')
 
-        # Read state_dict
-        state_dict = torch.load(archive_path, map_location='cpu')
+            # Remove weights from the state_dict
+            if ignore_keys is not None and len(ignore_keys) > 0:
+                for key in ignore_keys:
+                    state_dict.pop(key)
+                missing_keys, unexpected_keys = model.load_state_dict(state_dict, strict=False)
+                if set(missing_keys) != set(ignore_keys) or len(unexpected_keys) > 0:
+                    raise ValueError("unable to load state_dict, due to non-matching keys.")
+            else:
+                # Load weights
+                model.load_state_dict(state_dict)
 
-        # Remove weights from the state_dict
-        if ignore_keys is not None and len(ignore_keys) > 0:
-            for key in ignore_keys:
-                state_dict.pop(key)
-            missing_keys, unexpected_keys = model.load_state_dict(state_dict, strict=False)
-            if set(missing_keys) != set(ignore_keys) or len(unexpected_keys) > 0:
-                raise ValueError("unable to load state_dict, due to non-matching keys.")
+            logging.info("weights loaded successfully!")
+
         else:
-            # Load weights
-            model.load_state_dict(state_dict)
+            flag_else = True
+    else:
+        flag_else = True
+
+    if flag_else:
+        if url is None:
+            logging.warning("Invalid model URL, using default initialization.")
+        else:
+            archive_path = download_from_url(url, hash_prefix=hash_prefix, cache_subdir='models', **kwargs)
+
+            # Read state_dict
+            state_dict = torch.load(archive_path, map_location='cpu')
+
+            # Remove weights from the state_dict
+            if ignore_keys is not None and len(ignore_keys) > 0:
+                for key in ignore_keys:
+                    state_dict.pop(key)
+                missing_keys, unexpected_keys = model.load_state_dict(state_dict, strict=False)
+                if set(missing_keys) != set(ignore_keys) or len(unexpected_keys) > 0:
+                    raise ValueError("unable to load state_dict, due to non-matching keys.")
+            else:
+                # Load weights
+                model.load_state_dict(state_dict)
 
 
 def conv_sequence_pt(
@@ -77,7 +105,7 @@ def conv_sequence_pt(
         list of layers
     """
     # No bias before Batch norm
-    kwargs['bias'] = kwargs.get('bias', not bn)
+    kwargs['bias'] = kwargs.get('bias', not(bn))
     # Add activation directly to the conv if there is no BN
     conv_seq: List[nn.Module] = [
         nn.Conv2d(in_channels, out_channels, **kwargs)
