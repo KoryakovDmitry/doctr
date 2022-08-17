@@ -29,6 +29,7 @@ elif is_torch_available():
 def _predictor(
     arch: Any,
     pretrained: bool,
+    path2weights: str = None,
     assume_straight_pages: bool = True,
     **kwargs: Any
 ) -> DetectionPredictor:
@@ -43,7 +44,7 @@ def _predictor(
                                  " assume_straight_pages=False, otherwise you should use one of these archs:"
                                  f"{ROT_ARCHS}")
 
-        _model = detection.__dict__[arch](pretrained=pretrained, assume_straight_pages=assume_straight_pages)
+        _model = detection.__dict__[arch](pretrained=pretrained, path2weights=path2weights, assume_straight_pages=assume_straight_pages)
     else:
         if not isinstance(arch, (detection.DBNet, detection.LinkNet)):
             raise ValueError(f"unknown architecture: {type(arch)}")
@@ -63,6 +64,7 @@ def _predictor(
 
 def detection_predictor(
     arch: Any = 'db_resnet50',
+    path2weights: str = None,
     pretrained: bool = False,
     assume_straight_pages: bool = True,
     **kwargs: Any
@@ -84,4 +86,4 @@ def detection_predictor(
         Detection predictor
     """
 
-    return _predictor(arch, pretrained, assume_straight_pages, **kwargs)
+    return _predictor(arch, pretrained, path2weights, assume_straight_pages, **kwargs)

@@ -16,6 +16,8 @@ def _predictor(
     det_arch: Any,
     reco_arch: Any,
     pretrained: bool,
+    path2weights_det: str = None,
+    path2weights_rec: str = None,
     assume_straight_pages: bool = True,
     preserve_aspect_ratio: bool = False,
     symmetric_pad: bool = True,
@@ -27,6 +29,7 @@ def _predictor(
     # Detection
     det_predictor = detection_predictor(
         det_arch,
+        path2weights_det=path2weights_det,
         pretrained=pretrained,
         batch_size=det_bs,
         assume_straight_pages=assume_straight_pages,
@@ -35,7 +38,7 @@ def _predictor(
     )
 
     # Recognition
-    reco_predictor = recognition_predictor(reco_arch, pretrained=pretrained, batch_size=reco_bs)
+    reco_predictor = recognition_predictor(reco_arch, path2weights_rec=path2weights_rec, pretrained=pretrained, batch_size=reco_bs)
 
     return OCRPredictor(
         det_predictor,
@@ -50,6 +53,8 @@ def _predictor(
 def ocr_predictor(
     det_arch: Any = 'db_resnet50',
     reco_arch: Any = 'crnn_vgg16_bn',
+    path2weights_det: str = None,
+    path2weights_rec: str = None,
     pretrained: bool = False,
     assume_straight_pages: bool = True,
     preserve_aspect_ratio: bool = False,
@@ -88,6 +93,8 @@ def ocr_predictor(
         det_arch,
         reco_arch,
         pretrained,
+        path2weights_det=path2weights_det,
+        path2weights_rec=path2weights_rec,
         assume_straight_pages=assume_straight_pages,
         preserve_aspect_ratio=preserve_aspect_ratio,
         symmetric_pad=symmetric_pad,
