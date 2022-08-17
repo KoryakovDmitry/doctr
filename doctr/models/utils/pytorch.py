@@ -40,6 +40,7 @@ def load_pretrained_params(
 
     flag_else = False
     if "path2weights" in kwargs:
+        logging.info(f"is exist this path ({kwargs['path2weights']}) to weights: {osp.isfile(kwargs['path2weights'])}")
         if osp.isfile(kwargs["path2weights"]):
             # Read state_dict
             state_dict = torch.load(kwargs["path2weights"], map_location='cpu')
