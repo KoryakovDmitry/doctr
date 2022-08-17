@@ -279,9 +279,9 @@ class DBNet(_DBNet, nn.Module):
 def _dbnet(
     arch: str,
     pretrained: bool,
+    path2weights: str,
     backbone_fn: Callable[[bool], nn.Module],
     fpn_layers: List[str],
-    path2weights: str = None,
     backbone_submodule: Optional[str] = None,
     pretrained_backbone: bool = True,
     **kwargs: Any,
@@ -329,10 +329,10 @@ def db_resnet34(pretrained: bool = False, path2weights: str = None, **kwargs: An
     return _dbnet(
         'db_resnet34',
         pretrained,
+        path2weights,
         resnet34,
         ['layer1', 'layer2', 'layer3', 'layer4'],
         None,
-        path2weights=path2weights,
         **kwargs,
     )
 
@@ -357,10 +357,10 @@ def db_resnet50(pretrained: bool = False, path2weights: str = None, **kwargs: An
     return _dbnet(
         'db_resnet50',
         pretrained,
+        path2weights,
         resnet50,
         ['layer1', 'layer2', 'layer3', 'layer4'],
         None,
-        path2weights=path2weights,
         **kwargs,
     )
 
@@ -385,10 +385,10 @@ def db_mobilenet_v3_large(pretrained: bool = False, path2weights: str = None, **
     return _dbnet(
         'db_mobilenet_v3_large',
         pretrained,
+        path2weights,
         mobilenet_v3_large,
         ['3', '6', '12', '16'],
         'features',
-        path2weights=path2weights,
         **kwargs,
     )
 
@@ -414,9 +414,9 @@ def db_resnet50_rotation(pretrained: bool = False, path2weights: str = None, **k
     return _dbnet(
         'db_resnet50_rotation',
         pretrained,
+        path2weights,
         resnet50,
         ['layer1', 'layer2', 'layer3', 'layer4'],
         None,
-        path2weights=path2weights,
         **kwargs,
     )

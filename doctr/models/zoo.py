@@ -29,7 +29,7 @@ def _predictor(
     # Detection
     det_predictor = detection_predictor(
         det_arch,
-        path2weights_det=path2weights_det,
+        path2weights=path2weights_det,
         pretrained=pretrained,
         batch_size=det_bs,
         assume_straight_pages=assume_straight_pages,
@@ -38,7 +38,7 @@ def _predictor(
     )
 
     # Recognition
-    reco_predictor = recognition_predictor(reco_arch, path2weights_rec=path2weights_rec, pretrained=pretrained, batch_size=reco_bs)
+    reco_predictor = recognition_predictor(reco_arch, path2weights=path2weights_rec, pretrained=pretrained, batch_size=reco_bs)
 
     return OCRPredictor(
         det_predictor,
