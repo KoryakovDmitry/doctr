@@ -29,9 +29,7 @@ default_cfgs: Dict[str, Dict[str, Any]] = {
         'std': (0.299, 0.296, 0.301),
         'input_shape': (3, 32, 128),
         'vocab': VOCABS['legacy_french'],
-        # 'url': 'https://github.com/mindee/doctr/releases/download/v0.3.1/crnn_vgg16_bn-9762b0b0.pt',
-        'url': None,
-        'path2weights': osp.join(os.getcwd(), "ocr_core/weights/rec/crnn_vgg16_bn-9762b0b0.pt"),
+        'url': 'https://github.com/mindee/doctr/releases/download/v0.3.1/crnn_vgg16_bn-9762b0b0.pt',
     },
     'crnn_mobilenet_v3_small': {
         'mean': (0.694, 0.695, 0.693),
@@ -235,6 +233,7 @@ def _crnn(
     arch: str,
     pretrained: bool,
     backbone_fn: Callable[[Any], nn.Module],
+    path2weights: str = None,
     pretrained_backbone: bool = True,
     ignore_keys: Optional[List[str]] = None,
     **kwargs: Any,
@@ -259,12 +258,12 @@ def _crnn(
         # The number of classes is not the same as the number of classes in the pretrained model =>
         # remove the last layer weights
         _ignore_keys = ignore_keys if _cfg['vocab'] != default_cfgs[arch]['vocab'] else None
-        load_pretrained_params(model, _cfg['url'], ignore_keys=_ignore_keys)
+        load_pretrained_params(model, _cfg['url'], path2weights=path2weights, ignore_keys=_ignore_keys)
 
     return model
 
 
-def crnn_vgg16_bn(pretrained: bool = False, **kwargs: Any) -> CRNN:
+def crnn_vgg16_bn(pretrained: bool = False, path2weights: str = None, **kwargs: Any) -> CRNN:
     """CRNN with a VGG-16 backbone as described in `"An End-to-End Trainable Neural Network for Image-based
     Sequence Recognition and Its Application to Scene Text Recognition" <https://arxiv.org/pdf/1507.05717.pdf>`_.
 
@@ -281,10 +280,10 @@ def crnn_vgg16_bn(pretrained: bool = False, **kwargs: Any) -> CRNN:
         text recognition architecture
     """
 
-    return _crnn('crnn_vgg16_bn', pretrained, vgg16_bn_r, ignore_keys=['linear.weight', 'linear.bias'], **kwargs)
+    return _crnn('crnn_vgg16_bn', pretrained, vgg16_bn_r, path2weights=path2weights, ignore_keys=['linear.weight', 'linear.bias'], **kwargs)
 
 
-def crnn_mobilenet_v3_small(pretrained: bool = False, **kwargs: Any) -> CRNN:
+def crnn_mobilenet_v3_small(pretrained: bool = False, path2weights: str = None, **kwargs: Any) -> CRNN:
     """CRNN with a MobileNet V3 Small backbone as described in `"An End-to-End Trainable Neural Network for Image-based
     Sequence Recognition and Its Application to Scene Text Recognition" <https://arxiv.org/pdf/1507.05717.pdf>`_.
 
@@ -305,12 +304,13 @@ def crnn_mobilenet_v3_small(pretrained: bool = False, **kwargs: Any) -> CRNN:
         'crnn_mobilenet_v3_small',
         pretrained,
         mobilenet_v3_small_r,
+        path2weights=path2weights,
         ignore_keys=['linear.weight', 'linear.bias'],
         **kwargs,
     )
 
 
-def crnn_mobilenet_v3_large(pretrained: bool = False, **kwargs: Any) -> CRNN:
+def crnn_mobilenet_v3_large(pretrained: bool = False, path2weights: str = None, **kwargs: Any) -> CRNN:
     """CRNN with a MobileNet V3 Large backbone as described in `"An End-to-End Trainable Neural Network for Image-based
     Sequence Recognition and Its Application to Scene Text Recognition" <https://arxiv.org/pdf/1507.05717.pdf>`_.
 
@@ -331,6 +331,7 @@ def crnn_mobilenet_v3_large(pretrained: bool = False, **kwargs: Any) -> CRNN:
         'crnn_mobilenet_v3_large',
         pretrained,
         mobilenet_v3_large_r,
+        path2weights=path2weights,
         ignore_keys=['linear.weight', 'linear.bias'],
         **kwargs,
     )

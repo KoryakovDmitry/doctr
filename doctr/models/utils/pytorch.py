@@ -19,6 +19,7 @@ __all__ = ['load_pretrained_params', 'conv_sequence_pt', 'export_model_to_onnx']
 
 def load_pretrained_params(
     model: nn.Module,
+    path2weights: str = None,
     url: Optional[str] = None,
     hash_prefix: Optional[str] = None,
     overwrite: bool = False,
@@ -39,11 +40,11 @@ def load_pretrained_params(
     """
 
     flag_else = False
-    if "path2weights" in kwargs:
-        logging.info(f"is exist this path ({kwargs['path2weights']}) to weights: {osp.isfile(kwargs['path2weights'])}")
-        if osp.isfile(kwargs["path2weights"]):
+    if isinstance(path2weights, str):
+        logging.info(f"is exist this path ({path2weights}) to weights: {osp.isfile(path2weights)}")
+        if osp.isfile(path2weights):
             # Read state_dict
-            state_dict = torch.load(kwargs["path2weights"], map_location='cpu')
+            state_dict = torch.load(path2weights, map_location='cpu')
 
             # Remove weights from the state_dict
             if ignore_keys is not None and len(ignore_keys) > 0:

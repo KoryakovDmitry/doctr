@@ -28,9 +28,7 @@ default_cfgs: Dict[str, Dict[str, Any]] = {
         'input_shape': (3, 1024, 1024),
         'mean': (0.798, 0.785, 0.772),
         'std': (0.264, 0.2749, 0.287),
-        # 'url': 'https://github.com/mindee/doctr/releases/download/v0.3.1/db_resnet50-ac60cadc.pt',
-        'url': None,
-        'path2weights': osp.join(os.getcwd(), "ocr_core/weights/det/db_resnet50-ac60cadc.pt"),
+        'url': 'https://github.com/mindee/doctr/releases/download/v0.3.1/db_resnet50-ac60cadc.pt',
     },
     'db_resnet34': {
         'input_shape': (3, 1024, 1024),
@@ -283,6 +281,7 @@ def _dbnet(
     pretrained: bool,
     backbone_fn: Callable[[bool], nn.Module],
     fpn_layers: List[str],
+    path2weights: str = None,
     backbone_submodule: Optional[str] = None,
     pretrained_backbone: bool = True,
     **kwargs: Any,
@@ -305,12 +304,12 @@ def _dbnet(
     model = DBNet(feat_extractor, cfg=default_cfgs[arch], **kwargs)
     # Load pretrained parameters
     if pretrained:
-        load_pretrained_params(model, default_cfgs[arch]['url'])
+        load_pretrained_params(model, default_cfgs[arch]['url'], path2weights=path2weights,)
 
     return model
 
 
-def db_resnet34(pretrained: bool = False, **kwargs: Any) -> DBNet:
+def db_resnet34(pretrained: bool = False, path2weights: str = None, **kwargs: Any) -> DBNet:
     """DBNet as described in `"Real-time Scene Text Detection with Differentiable Binarization"
     <https://arxiv.org/pdf/1911.08947.pdf>`_, using a ResNet-34 backbone.
 
@@ -333,11 +332,12 @@ def db_resnet34(pretrained: bool = False, **kwargs: Any) -> DBNet:
         resnet34,
         ['layer1', 'layer2', 'layer3', 'layer4'],
         None,
+        path2weights=path2weights,
         **kwargs,
     )
 
 
-def db_resnet50(pretrained: bool = False, **kwargs: Any) -> DBNet:
+def db_resnet50(pretrained: bool = False, path2weights: str = None, **kwargs: Any) -> DBNet:
     """DBNet as described in `"Real-time Scene Text Detection with Differentiable Binarization"
     <https://arxiv.org/pdf/1911.08947.pdf>`_, using a ResNet-50 backbone.
 
@@ -360,11 +360,12 @@ def db_resnet50(pretrained: bool = False, **kwargs: Any) -> DBNet:
         resnet50,
         ['layer1', 'layer2', 'layer3', 'layer4'],
         None,
+        path2weights=path2weights,
         **kwargs,
     )
 
 
-def db_mobilenet_v3_large(pretrained: bool = False, **kwargs: Any) -> DBNet:
+def db_mobilenet_v3_large(pretrained: bool = False, path2weights: str = None, **kwargs: Any) -> DBNet:
     """DBNet as described in `"Real-time Scene Text Detection with Differentiable Binarization"
     <https://arxiv.org/pdf/1911.08947.pdf>`_, using a MobileNet V3 Large backbone.
 
@@ -387,11 +388,12 @@ def db_mobilenet_v3_large(pretrained: bool = False, **kwargs: Any) -> DBNet:
         mobilenet_v3_large,
         ['3', '6', '12', '16'],
         'features',
+        path2weights=path2weights,
         **kwargs,
     )
 
 
-def db_resnet50_rotation(pretrained: bool = False, **kwargs: Any) -> DBNet:
+def db_resnet50_rotation(pretrained: bool = False, path2weights: str = None, **kwargs: Any) -> DBNet:
     """DBNet as described in `"Real-time Scene Text Detection with Differentiable Binarization"
     <https://arxiv.org/pdf/1911.08947.pdf>`_, using a ResNet-50 backbone.
     This model is trained with rotated documents
@@ -415,5 +417,6 @@ def db_resnet50_rotation(pretrained: bool = False, **kwargs: Any) -> DBNet:
         resnet50,
         ['layer1', 'layer2', 'layer3', 'layer4'],
         None,
+        path2weights=path2weights,
         **kwargs,
     )
