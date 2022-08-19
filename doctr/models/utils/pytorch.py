@@ -40,8 +40,8 @@ def load_pretrained_params(
     """
 
     flag_else = False
+    logging.warning(f"is exist this path ({path2weights}) to weights: {osp.isfile(path2weights)}")
     if isinstance(path2weights, str):
-        logging.info(f"is exist this path ({path2weights}) to weights: {osp.isfile(path2weights)}")
         if osp.isfile(path2weights):
             # Read state_dict
             state_dict = torch.load(path2weights, map_location='cpu')
@@ -57,7 +57,7 @@ def load_pretrained_params(
                 # Load weights
                 model.load_state_dict(state_dict)
 
-            logging.info("weights loaded successfully!")
+            logging.warning("weights loaded successfully!")
 
         else:
             flag_else = True

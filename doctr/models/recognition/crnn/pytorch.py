@@ -231,9 +231,9 @@ class CRNN(RecognitionModel, nn.Module):
 
 def _crnn(
     arch: str,
+    path2weights: str,
     pretrained: bool,
     backbone_fn: Callable[[Any], nn.Module],
-    path2weights: str = None,
     pretrained_backbone: bool = True,
     ignore_keys: Optional[List[str]] = None,
     **kwargs: Any,
@@ -258,7 +258,7 @@ def _crnn(
         # The number of classes is not the same as the number of classes in the pretrained model =>
         # remove the last layer weights
         _ignore_keys = ignore_keys if _cfg['vocab'] != default_cfgs[arch]['vocab'] else None
-        load_pretrained_params(model, _cfg['url'], path2weights=path2weights, ignore_keys=_ignore_keys)
+        load_pretrained_params(model, path2weights, _cfg['url'], ignore_keys=_ignore_keys)
 
     return model
 
@@ -280,7 +280,7 @@ def crnn_vgg16_bn(pretrained: bool = False, path2weights: str = None, **kwargs: 
         text recognition architecture
     """
 
-    return _crnn('crnn_vgg16_bn', pretrained, vgg16_bn_r, path2weights=path2weights, ignore_keys=['linear.weight', 'linear.bias'], **kwargs)
+    return _crnn('crnn_vgg16_bn', path2weights, pretrained, vgg16_bn_r, ignore_keys=['linear.weight', 'linear.bias'], **kwargs)
 
 
 def crnn_mobilenet_v3_small(pretrained: bool = False, path2weights: str = None, **kwargs: Any) -> CRNN:
@@ -302,6 +302,7 @@ def crnn_mobilenet_v3_small(pretrained: bool = False, path2weights: str = None, 
 
     return _crnn(
         'crnn_mobilenet_v3_small',
+        path2weights,
         pretrained,
         mobilenet_v3_small_r,
         path2weights=path2weights,
@@ -329,6 +330,7 @@ def crnn_mobilenet_v3_large(pretrained: bool = False, path2weights: str = None, 
 
     return _crnn(
         'crnn_mobilenet_v3_large',
+        path2weights,
         pretrained,
         mobilenet_v3_large_r,
         path2weights=path2weights,

@@ -304,7 +304,7 @@ def _dbnet(
     model = DBNet(feat_extractor, cfg=default_cfgs[arch], **kwargs)
     # Load pretrained parameters
     if pretrained:
-        load_pretrained_params(model, default_cfgs[arch]['url'], path2weights=path2weights,)
+        load_pretrained_params(model, path2weights, default_cfgs[arch]['url'], )
 
     return model
 
